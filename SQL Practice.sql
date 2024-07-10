@@ -349,3 +349,14 @@ nth_value(prod_name, 2) over w as second_expensive_product
 from products window  w as
 (partition by prod_category order by price
  desc range between unbounded preceding and unbounded following );
+
+-- NTILE 
+-- NTILE GROUP / SEGREGATE DATA INTO DIFFERENT GROUPS
+-- Query to segregate all skin care products in expensive normal and least range
+Select prod_name, prod_category, 
+case when x.buckets= 1 then 'Most Expensive Product'
+	 when x.buckets = 2 then 'Moderate'
+	 when x.buckets = 3 then 'Least Expensive' END Category
+from (select* ,
+ntile(3) over(order by price desc) as buckets
+from products where prod_category ='Body') x ;
