@@ -312,3 +312,40 @@ select e.*, lag(salary) over( partition by dept_name order by empId desc)
   end Sal_Range
   from emp e;
   
+/* Windows Function
+To get the most expensive product from all the categories */
+-- FIRST_VALUE
+select *, first_value(prod_name) over( partition by prod_category order by price desc) as
+Most_Expensive_Product from
+products;
+/*
+LAST_VALUE
+To get the most expensive product from all the categories */
+select *,first_value(prod_name) over( partition by prod_category order by price desc) as
+Most_Expensive_Product, last_value(prod_name) over(partition by prod_category order by price desc)
+ as Least_Expensive_Prod
+from products;
+-- DEFAULT Frame Clause
+select *,
+last_value(prod_name)
+over(partition by prod_category order by
+price ASC range between unbounded preceding and unbounded following) 
+ as Least_Expensive_Prod from products;
+-- range tells range of record that last_value needs to consider
+-- unbounded preceding for checking from 1st row to end 
+-- unbounded following -- to the end
+
+-- Another way to write window queries
+select *,first_value(prod_name) over w as
+Most_Expensive_Product, last_value(prod_name) over w
+as Least_Expensive_Prod
+from products window  w as
+(partition by prod_category order by price desc range between unbounded preceding and unbounded following );
+-- Nth_Value to extract from a position
+
+-- Query to Extract second most expensive product under each category
+select *,
+nth_value(prod_name, 2) over w as second_expensive_product
+from products window  w as
+(partition by prod_category order by price
+ desc range between unbounded preceding and unbounded following );
