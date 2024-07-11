@@ -365,6 +365,19 @@ from products where prod_category ='Body') x ;
 -- to find distribution percentage of each record with respect to all rows
 -- provide val between 0 and 1
 -- Execute query to find which products are using 30% of the data
+
 select prod_name, price, cume_distribution from (select * ,
 cume_dist() over(order by price desc) as cume_distribution
 from products) x where x.cume_distribution <=0.31;
+
+
+-- percent_rank
+-- Query to check how expensive is Aqua serum as compared to other products
+-- current row  - 1 / total no pf row -1
+
+SELECT prod_name, price,  percentage_rank 
+FROM (
+    SELECT *, 
+           ROUND(CAST(PERCENT_RANK() OVER(ORDER BY price) AS DECIMAL) * 100, 2) AS percentage_rank 
+    FROM products
+) x WHERE x.prod_name = 'Aqua Serum';
