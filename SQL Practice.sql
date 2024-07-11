@@ -360,3 +360,11 @@ case when x.buckets= 1 then 'Most Expensive Product'
 from (select* ,
 ntile(3) over(order by price desc) as buckets
 from products where prod_category ='Body') x ;
+
+-- cume_dist (cummulative formula)
+-- to find distribution percentage of each record with respect to all rows
+-- provide val between 0 and 1
+-- Execute query to find which products are using 30% of the data
+select prod_name, price, cume_distribution from (select * ,
+cume_dist() over(order by price desc) as cume_distribution
+from products) x where x.cume_distribution <=0.31;
