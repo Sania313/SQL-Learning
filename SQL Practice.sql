@@ -381,3 +381,9 @@ FROM (
            ROUND(CAST(PERCENT_RANK() OVER(ORDER BY price) AS DECIMAL) * 100, 2) AS percentage_rank 
     FROM products
 ) x WHERE x.prod_name = 'Aqua Serum';
+-- CTE 'S
+ with average_salary (avg_sal) as 
+ (select avg(salary) from emp)
+ select * from
+ emp e, average_salary as av where e.salary> av.avg_sal;
+select * from products;
